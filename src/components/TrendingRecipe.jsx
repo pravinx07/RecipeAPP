@@ -1,22 +1,29 @@
 import React from "react";
-import { useFetch } from "./useFetch";
-import { Clock, Key, Loader } from "lucide-react";
-import RecipeCard from "./RecipeCard";
 import Slider from "react-slick";
 
-const TrendingRecipe = ({ title, fetchUrl }) => {
+import { useFetch } from "./useFetch";
+
+import { Link } from "react-router-dom";
+
+import { Clock, Loader } from "lucide-react";
+
+const TrendingSlider = ({ title, fetchUrl }) => {
   const { data, loading, error } = useFetch(fetchUrl);
-  console.log("my meal data: ", data);
   const meals = data?.meals || [];
+
   const settings = {
     dots: false,
+    arrows: false,
     infinite: true,
-    arrows:false,
-    slidesToShow: 6,
     speed: 600,
+    slidesToShow: 6,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
+    cssEase: "linear",
+
+    appendDots: () => null,
+    customPaging: () => null,
   };
 
   if (loading)
@@ -28,7 +35,7 @@ const TrendingRecipe = ({ title, fetchUrl }) => {
     );
   return (
     <>
-      <section className="mt-2 mx-auto ">
+      <section className="mt-2 mx-auto">
         <h2 className="text-3xl font-extrabold text-gray-100 mb-6 tracking-tight border-1-4 border-yellow-400 pl-4 flex items-center">
           <Clock className="w-6 h-6 mr-3 text-blue-500" />
           {title}
@@ -38,18 +45,20 @@ const TrendingRecipe = ({ title, fetchUrl }) => {
           <Slider {...settings}>
             {meals.map((meal) => (
               <div key={meal.idMeal} className="px-10 flex justify-center">
-                {" "}
-                <div className="relative bg-gray-900 shadow-xl rounded-xl shadow-black/50 overflow-hidden group  transform transition duration-500 cursor-pointer border border-gray-800 hover:shadow-blue-600/50 mb-5">
-                  <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:broder-blue-500 transition duration-500 "></div>
+                <Link to={`/recipe/${meal.idMeal}/`}>
+                <div className="relative bg-gray-900 rounded-xl shadow-xl shadow-black/50 overflow-hidden group transform transition duration-500 cursor-pointer border border-gray-800 hover:shadow-blue-600/50 mb-5">
+                  {/* Hover glow */}
+                  <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-blue-500/80 transition duration-500"></div>
+
                   <div className="flex justify-center items-center p-5">
                     <img
                       src={meal?.strMealThumb}
-                      className="h-[120px] w-[120px] rounded-xl border border-yellow-400 transition duration-500 group-hover:scale-105"
                       alt=""
+                      className="h-[120px] w-[120px] rounded-xl border border-yellow-400 transition duration-500 group-hover:scale-105"
                     />
                   </div>
-                  
                 </div>
+                </Link>
               </div>
             ))}
           </Slider>
@@ -59,4 +68,4 @@ const TrendingRecipe = ({ title, fetchUrl }) => {
   );
 };
 
-export default TrendingRecipe;
+export default TrendingSlider;
